@@ -1,0 +1,24 @@
+name: Setup Public
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run setup script
+        shell: pwsh
+        run: ./scripts/setup-public.ps1
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add auth.js oauth-bootstrap.js
+          git commit -m "Generate public auth files" || echo "No changes to commit"
+          git push
