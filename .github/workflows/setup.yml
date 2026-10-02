@@ -7,18 +7,20 @@ permissions:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Run setup script
         shell: pwsh
-        run: ./scripts/setup-public.ps1
+        run: .\scripts\setup-public.ps1
 
       - name: Commit generated files
+        shell: pwsh
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add auth.js oauth-bootstrap.js
-          git commit -m "Generate public auth files" || echo "No changes to commit"
+          git commit -m "Generate public auth files"
+          if ($LASTEXITCODE -ne 0) { exit 0 }
           git push
